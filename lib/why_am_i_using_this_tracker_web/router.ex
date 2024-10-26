@@ -13,5 +13,6 @@ defmodule WhyAmIUsingThisTrackerWeb.Router do
     resources "/analytics_data", AnalyticsController, only: [:index, :create, :show]
     resources "/mood_data", MoodController, only: [:index, :create, :show]
     resources "/gamification_data", GamificationController, only: [:index, :create, :show]
+    resources "/marketing_data", MarketingController, only: [:index, :create, :show]
   end
 end

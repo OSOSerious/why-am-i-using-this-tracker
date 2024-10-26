@@ -4,6 +4,7 @@
   import Analytics from './components/Analytics.svelte';
   import MoodTracker from './components/MoodTracker.svelte';
   import Gamification from './components/Gamification.svelte';
+  import MarketingDashboard from './components/MarketingDashboard.svelte';
 
   let usageData = [];
   let userResponses = [];
@@ -31,4 +32,5 @@
   <Analytics />
   <MoodTracker />
   <Gamification />
+  <MarketingDashboard />
 </main>

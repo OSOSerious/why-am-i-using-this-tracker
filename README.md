@@ -28,6 +28,12 @@ Instead of just showing usage statistics, it encourages self-reflection, making 
 * Create challenges and milestones to keep users engaged and motivated.
 * Provide a leaderboard to foster a sense of competition and community among users.
 
+### Marketing Dashboard
+* Add a marketing dashboard to track marketing activities.
+* Implement features to list, create, show, update, and delete marketing data.
+* Provide visualizations and reports to help users understand their marketing efforts and ROI.
+* Integrate with existing analytics to correlate marketing activities with user engagement and app usage.
+
 ## Setup Instructions
 To execute the tasks and run the project, follow these steps:
 
