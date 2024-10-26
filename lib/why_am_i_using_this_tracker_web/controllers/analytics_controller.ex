@@ -7,8 +7,10 @@ defmodule WhyAmIUsingThisTrackerWeb.AnalyticsController do
     case AnalyticsData.create_engagement(%{user_id: user_id, engagement: engagement}) do
       {:ok, _engagement} ->
         send_resp(conn, :created, "User engagement tracked successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to track user engagement")
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -16,8 +18,10 @@ defmodule WhyAmIUsingThisTrackerWeb.AnalyticsController do
     case AnalyticsData.create_session_duration(%{user_id: user_id, duration: duration}) do
       {:ok, _duration} ->
         send_resp(conn, :created, "Session duration tracked successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to track session duration")
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -25,8 +29,10 @@ defmodule WhyAmIUsingThisTrackerWeb.AnalyticsController do
     case AnalyticsData.create_app_usage_pattern(%{user_id: user_id, app_usage: app_usage}) do
       {:ok, _app_usage} ->
         send_resp(conn, :created, "App usage pattern tracked successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to track app usage pattern")
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -41,6 +47,11 @@ defmodule WhyAmIUsingThisTrackerWeb.AnalyticsController do
       |> put_status(:created)
       |> put_resp_header("location", Routes.analytics_path(conn, :show, analytics_data))
       |> render("show.json", analytics_data: analytics_data)
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -54,6 +65,11 @@ defmodule WhyAmIUsingThisTrackerWeb.AnalyticsController do
 
     with {:ok, %AnalyticsData{} = analytics_data} <- AnalyticsData.update_analytics_data(analytics_data, analytics_data_params) do
       render(conn, "show.json", analytics_data: analytics_data)
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -62,6 +78,11 @@ defmodule WhyAmIUsingThisTrackerWeb.AnalyticsController do
 
     with {:ok, %AnalyticsData{}} <- AnalyticsData.delete_analytics_data(analytics_data) do
       send_resp(conn, :no_content, "")
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 end

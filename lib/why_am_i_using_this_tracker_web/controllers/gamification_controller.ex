@@ -15,6 +15,11 @@ defmodule WhyAmIUsingThisTrackerWeb.GamificationController do
       |> put_status(:created)
       |> put_resp_header("location", Routes.gamification_path(conn, :show, gamification_data))
       |> render("show.json", gamification_data: gamification_data)
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -28,6 +33,11 @@ defmodule WhyAmIUsingThisTrackerWeb.GamificationController do
 
     with {:ok, %GamificationData{} = gamification_data} <- Gamification.update_gamification_data(gamification_data, gamification_data_params) do
       render(conn, "show.json", gamification_data: gamification_data)
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -36,6 +46,11 @@ defmodule WhyAmIUsingThisTrackerWeb.GamificationController do
 
     with {:ok, %GamificationData{}} <- Gamification.delete_gamification_data(gamification_data) do
       send_resp(conn, :no_content, "")
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -43,8 +58,10 @@ defmodule WhyAmIUsingThisTrackerWeb.GamificationController do
     case Gamification.update_reward_points(user_id, reward_points) do
       {:ok, _reward} ->
         send_resp(conn, :ok, "Rewards updated successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to update rewards")
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -52,8 +69,10 @@ defmodule WhyAmIUsingThisTrackerWeb.GamificationController do
     case Gamification.update_challenges_completed(user_id, challenges_completed) do
       {:ok, _challenge} ->
         send_resp(conn, :ok, "Challenges updated successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to update challenges")
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -61,8 +80,10 @@ defmodule WhyAmIUsingThisTrackerWeb.GamificationController do
     case Gamification.update_leaderboard_position(user_id, leaderboard_position) do
       {:ok, _leaderboard} ->
         send_resp(conn, :ok, "Leaderboard position updated successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to update leaderboard position")
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 end

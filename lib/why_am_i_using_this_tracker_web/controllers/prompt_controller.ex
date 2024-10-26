@@ -9,11 +9,16 @@ defmodule WhyAmIUsingThisTrackerWeb.PromptController do
   end
 
   def create(conn, %{"user_response" => user_response_params}) do
-    with {:ok, %UserResponses{} = user_response} <- UserResponses.create_response(user_response_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.prompt_path(conn, :show, user_response))
-      |> render("show.json", user_response: user_response)
+    case UserResponses.create_response(user_response_params) do
+      {:ok, %UserResponses{} = user_response} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.prompt_path(conn, :show, user_response))
+        |> render("show.json", user_response: user_response)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 

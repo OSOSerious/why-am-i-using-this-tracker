@@ -3,23 +3,40 @@
 
   let moodData = [];
   let currentMood = '';
+  let errorMessage = '';
 
   async function fetchMoodData() {
-    const response = await fetch('/api/mood_data');
-    const data = await response.json();
-    moodData = data.data;
+    try {
+      const response = await fetch('/api/mood_data');
+      const data = await response.json();
+      if (data && data.data) {
+        moodData = data.data;
+      } else {
+        throw new Error('Invalid data format');
+      }
+    } catch (error) {
+      errorMessage = 'Failed to fetch mood data: ' + error.message;
+    }
   }
 
   async function logMood() {
-    const response = await fetch('/api/log_mood', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ mood: currentMood })
-    });
-    const data = await response.json();
-    moodData.push(data.data);
+    try {
+      const response = await fetch('/api/log_mood', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mood: currentMood })
+      });
+      const data = await response.json();
+      if (data && data.data) {
+        moodData.push(data.data);
+      } else {
+        throw new Error('Invalid data format');
+      }
+    } catch (error) {
+      errorMessage = 'Failed to log mood: ' + error.message;
+    }
   }
 
   function analyzeMoodData() {
@@ -35,7 +52,11 @@
 
 <main>
   <h2>Mood Tracker</h2>
-  <input type="text" bind:value={currentMood} placeholder="How are you feeling?" />
+  {#if errorMessage}
+    <p class="error">{errorMessage}</p>
+  {/if}
+  <label for="mood">How are you feeling?</label>
+  <input type="text" id="mood" bind:value={currentMood} placeholder="How are you feeling?" />
   <button on:click={logMood}>Log Mood</button>
   <ul>
     {#each moodData as mood}

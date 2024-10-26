@@ -14,6 +14,11 @@ defmodule WhyAmIUsingThisTrackerWeb.UsageController do
       |> put_status(:created)
       |> put_resp_header("location", Routes.usage_path(conn, :show, usage_data))
       |> render("show.json", usage_data: usage_data)
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
@@ -24,10 +29,14 @@ defmodule WhyAmIUsingThisTrackerWeb.UsageController do
 
   def track_app_usage(conn, %{"app" => app, "duration" => duration}) do
     case UsageData.create_usage_data(%{app: app, duration: duration}) do
-      {:ok, _usage_data} ->
-        send_resp(conn, :created, "App usage tracked successfully")
-      {:error, _changeset} ->
-        send_resp(conn, :unprocessable_entity, "Failed to track app usage")
+      {:ok, usage_data} ->
+        conn
+        |> put_status(:created)
+        |> render("show.json", usage_data: usage_data)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: changeset})
     end
   end
 
